@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/tvRouteHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Route Plan"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="12dp">
+        <Button android:id="@+id/tabAll" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="All" style="?android:attr/borderlessButtonStyle" android:textSize="12sp"/>
+        <Button android:id="@+id/tabPending" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Pending" style="?android:attr/borderlessButtonStyle" android:textSize="12sp"/>
+        <Button android:id="@+id/tabDelayed" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Delayed" style="?android:attr/borderlessButtonStyle" android:textSize="12sp"/>
+        <Button android:id="@+id/tabDone" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Done" style="?android:attr/borderlessButtonStyle" android:textSize="12sp"/>
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/routeRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <Button
+        android:id="@+id/btnSaveOrder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Save Order"
+        android:visibility="gone"
+        android:layout_marginTop="8dp"/>
+
+</LinearLayout>

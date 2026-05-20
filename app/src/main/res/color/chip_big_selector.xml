@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    res/color/chip_bg_selector.xml
+    ────────────────────────────────
+    IMPORTANT: This file goes in the  color/  folder, NOT drawable/.
+
+    HOW TO CREATE:
+    1. Right-click on  res/  folder in Android Studio
+    2. New → Android Resource Directory
+    3. Resource type: color  (not drawable, not layout)
+    4. Click OK — a new  res/color/  folder appears
+    5. Right-click  res/color/  → New → Color Resource File
+    6. Name it: chip_bg_selector
+    7. Replace contents with this file
+
+    This controls the chip background:
+      Checked (selected) = orange #E65100
+      Unchecked = light grey #EEEEEE
+-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="#E65100" android:state_checked="true"/>
+    <item android:color="#EEEEEE"/>
+</selector>

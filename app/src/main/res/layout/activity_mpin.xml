@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/layout/activity_mpin.xml
+     Shows after login. Agent sets a 4-digit MPIN.
+     Next time they open the app, they enter MPIN instead of email+password. -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#F5F5F5"
+    android:padding="32dp">
+
+    <!-- App logo / icon -->
+    <TextView
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:background="@drawable/circle_orange"
+        android:gravity="center"
+        android:text="🍱"
+        android:textSize="32sp"
+        android:layout_marginBottom="24dp"/>
+
+    <!-- Title changes between "Set MPIN" and "Enter MPIN" -->
+    <TextView
+        android:id="@+id/tvMpinTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set Your MPIN"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="#212121"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Subtitle -->
+    <TextView
+        android:id="@+id/tvMpinSubtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enter a 4-digit PIN to quickly open the app next time"
+        android:textSize="13sp"
+        android:textColor="#757575"
+        android:gravity="center"
+        android:layout_marginBottom="36dp"/>
+
+    <!-- 4 dot indicators showing how many digits entered -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="32dp">
+
+        <View android:id="@+id/dot1" android:layout_width="18dp" android:layout_height="18dp"
+            android:layout_marginHorizontal="10dp" android:background="@drawable/dot_empty"/>
+        <View android:id="@+id/dot2" android:layout_width="18dp" android:layout_height="18dp"
+            android:layout_marginHorizontal="10dp" android:background="@drawable/dot_empty"/>
+        <View android:id="@+id/dot3" android:layout_width="18dp" android:layout_height="18dp"
+            android:layout_marginHorizontal="10dp" android:background="@drawable/dot_empty"/>
+        <View android:id="@+id/dot4" android:layout_width="18dp" android:layout_height="18dp"
+            android:layout_marginHorizontal="10dp" android:background="@drawable/dot_empty"/>
+    </LinearLayout>
+
+    <!-- Error message (hidden until wrong PIN) -->
+    <TextView
+        android:id="@+id/tvMpinError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Incorrect PIN. Try again."
+        android:textSize="13sp"
+        android:textColor="#C62828"
+        android:visibility="gone"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- NUMBER PAD — 3 rows of 3 + 0 row -->
+    <GridLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:columnCount="3"
+        android:rowCount="4"
+        android:layout_marginBottom="20dp">
+
+        <!-- Row 1: 1 2 3 -->
+        <Button android:id="@+id/btn1" android:layout_width="80dp" android:layout_height="80dp"
+            android:text="1" android:textSize="24sp" android:textStyle="bold"
+            android:backgroundTint="#FFFFFF" android:textColor="#212121"
+            android:layout_margin="6dp" android:stateListAnimator="@null"
+            android:elevation="2dp" style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:onClick="onPadClick"/>
+        <Button android:id="@+id/btn2" android:layout_width="80dp" android:layout_height="80dp"
+            android:text="2" android:textSize="24sp" android:textStyle="bold"
+            android:backgroundTint="#FFFFFF" android:textColor="#212121"
+            android:layout_margin="6dp" android:stateListAnimator="@null"
+            android:elevation="2dp" style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:onClick="onPadClick"/>
+        <Button android:id="@+id/btn3" android:layout_width="80dp" android:layout_height="80dp"
+            android:text="3" android:textSize="24sp" android:textStyle="bold"
+            android:backgroundTint="#FFFFFF" android:textColor="#212121"
+            android:layout_margin="6dp" android:stateListAnimator="@null"
+            android:elevation="2dp" style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:onClick="onPadClick"/>
+
+        <!-- Row 2: 4 5 6 -->
+        <Button android:id="@+id/btn4" android:layout_width="80dp" android:layout_height="80dp"
+            android:text="4" android:textSize="24sp" android:textStyle="bold"
+            android:backgroundTint="#FFFFFF" android:textColor="#212121"
+            android:layout_margin="6dp" android:stateListAnimator="@null"
+            android:elevation="2dp" style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:onClick="onPadClick"/>
+        <Button android:id="@+id/btn5" android:layout_width="80dp" android:layout_height="80dp"
+            android:text="5" android:textSize="24sp" android:textStyle="bold"
+            android:backgroundTint="#FFFFFF" android:textColor="#212121"
+            android:layout_margin="6dp" android:stateListAnimator="@null"
+            android:elevation="2dp" style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:onClick="onPadClick"/>
+        <Button android:id="@+id/btn6" android:layout_width="80dp" android:layout_height="80dp"
+            android:text="6" android:textSize="24sp" android:textStyle="bold"
+            android:backgroundTint="#FFFFFF" android:textColor="#212121"
+            android:layout_margin="6dp" android:stateListAnimator="@null"
+            android:elevation="2dp" style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:onClick="onPadClick"/>
+
+        <!-- Row 3: 7 8 9 -->
+        <Button android:id="@+id/btn7" android:layout_width="80dp" android:layout_height="80dp"
+            android:text="7" android:textSize="24sp" android:textStyle="bold"
+            android:backgroundTint="#FFFFFF" android:textColor="#212121"
+            android:layout_margin="6dp" android:stateListAnimator="@null"
+            android:elevation="2dp" style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:onClick="onPadClick"/>
+        <Button android:id="@+id/btn8" android:layout_width="80dp" android:layout_height="80dp"
+            android:text="8" android:textSize="24sp" android:textStyle="bold"
+            android:backgroundTint="#FFFFFF" android:textColor="#212121"
+            android:layout_margin="6dp" android:stateListAnimator="@null"
+            android:elevation="2dp" style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:onClick="onPadClick"/>
+        <Button android:id="@+id/btn9" android:layout_width="80dp" android:layout_height="80dp"
+            android:text="9" android:textSize="24sp" android:textStyle="bold"
+            android:backgroundTint="#FFFFFF" android:textColor="#212121"
+            android:layout_margin="6dp" android:stateListAnimator="@null"
+            android:elevation="2dp" style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:onClick="onPadClick"/>
+
+        <!-- Row 4: back ← 0 skip/ok -->
+        <Button android:id="@+id/btnBack" android:layout_width="80dp" android:layout_height="80dp"
+            android:text="⌫" android:textSize="22sp"
+            android:backgroundTint="#F5F5F5" android:textColor="#424242"
+            android:layout_margin="6dp" android:stateListAnimator="@null"
+            android:onClick="onPadClick"/>
+        <Button android:id="@+id/btn0" android:layout_width="80dp" android:layout_height="80dp"
+            android:text="0" android:textSize="24sp" android:textStyle="bold"
+            android:backgroundTint="#FFFFFF" android:textColor="#212121"
+            android:layout_margin="6dp" android:stateListAnimator="@null"
+            android:elevation="2dp" style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:onClick="onPadClick"/>
+        <!-- Empty cell (right of 0) - placeholder -->
+        <View android:layout_width="80dp" android:layout_height="80dp" android:layout_margin="6dp"/>
+
+    </GridLayout>
+
+    <!-- Skip button — only shown when setting MPIN for first time -->
+    <TextView
+        android:id="@+id/tvMpinSkip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Skip for now"
+        android:textSize="13sp"
+        android:textColor="#9E9E9E"
+        android:padding="10dp"
+        android:clickable="true"
+        android:focusable="true"/>
+
+</LinearLayout>

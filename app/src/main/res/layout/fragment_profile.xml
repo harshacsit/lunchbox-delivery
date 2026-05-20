@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/layout/fragment_profile.xml
+     The crash happens because ProfileFragment tries to call
+     view.findViewById() on IDs that do not exist in the layout.
+     This layout defines ALL the IDs that ProfileFragment.java uses.
+     Replace your old fragment_profile.xml with this. -->
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- ── ORANGE HEADER CARD ── -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#E65100"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- Avatar + name row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
+
+                <!-- Initials circle -->
+                <TextView
+                    android:id="@+id/tvProfileInitials"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:background="@drawable/circle_white_semi"
+                    android:gravity="center"
+                    android:text="RK"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:textColor="#E65100"
+                    android:layout_marginEnd="16dp"/>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvProfileName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Delivery Agent"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF"/>
+
+                    <TextView
+                        android:id="@+id/tvProfileEmail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="email@example.com"
+                        android:textSize="12sp"
+                        android:textColor="#FFCCBC"
+                        android:layout_marginTop="2dp"/>
+
+                    <TextView
+                        android:id="@+id/tvProfilePhone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="📞 —"
+                        android:textSize="12sp"
+                        android:textColor="#FFCCBC"
+                        android:layout_marginTop="2dp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Today's progress line -->
+            <TextView
+                android:id="@+id/tvTodayDone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Today: loading..."
+                android:textSize="13sp"
+                android:textColor="#FFCCBC"/>
+        </LinearLayout>
+
+        <!-- ── STATS ROW ── -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="12dp"
+            android:background="#FFFFFF"
+            android:layout_marginBottom="10dp">
+
+            <!-- Total deliveries -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="#FFF3E0"
+                android:padding="12dp"
+                android:layout_marginEnd="6dp">
+                <TextView
+                    android:id="@+id/tvTotalDeliveries"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textSize="26sp"
+                    android:textStyle="bold"
+                    android:textColor="#E65100"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total"
+                    android:textSize="11sp"
+                    android:textColor="#9E9E9E"
+                    android:layout_marginTop="2dp"/>
+            </LinearLayout>
+
+            <!-- Completed -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="#E8F5E9"
+                android:padding="12dp"
+                android:layout_marginEnd="6dp">
+                <TextView
+                    android:id="@+id/tvDoneDeliveries"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textSize="26sp"
+                    android:textStyle="bold"
+                    android:textColor="#2E7D32"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Done"
+                    android:textSize="11sp"
+                    android:textColor="#9E9E9E"
+                    android:layout_marginTop="2dp"/>
+            </LinearLayout>
+
+            <!-- Success rate -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="#E3F2FD"
+                android:padding="12dp">
+                <TextView
+                    android:id="@+id/tvSuccessRate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="—%"
+                    android:textSize="26sp"
+                    android:textStyle="bold"
+                    android:textColor="#1565C0"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rate"
+                    android:textSize="11sp"
+                    android:textColor="#9E9E9E"
+                    android:layout_marginTop="2dp"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ── PARTNER INFO CARD ── -->
+        <androidx.cardview.widget.CardView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
+            android:layout_marginBottom="10dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="#FFFFFF">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="DELIVERY PARTNER INFO"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:textColor="#9E9E9E"
+                    android:letterSpacing="0.12"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- Member since -->
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical"
+                    android:paddingVertical="10dp" android:layout_marginBottom="2dp">
+                    <TextView android:layout_width="28dp" android:layout_height="wrap_content"
+                        android:text="📅" android:textSize="16sp"/>
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical" android:layout_marginStart="4dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Member since" android:textSize="12sp" android:textColor="#757575"/>
+                        <TextView android:id="@+id/tvMemberSince" android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:text="—"
+                            android:textSize="14sp" android:textStyle="bold" android:textColor="#212121"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="0.5dp" android:background="#F0F0F0"/>
+
+                <!-- Rating -->
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical"
+                    android:paddingVertical="10dp" android:layout_marginBottom="2dp">
+                    <TextView android:layout_width="28dp" android:layout_height="wrap_content"
+                        android:text="🏆" android:textSize="16sp"/>
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Rating" android:textSize="12sp" android:textColor="#757575"/>
+                        <TextView android:id="@+id/tvRating" android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:text="⭐ 5.0 / 5.0"
+                            android:textSize="14sp" android:textStyle="bold" android:textColor="#E65100"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="0.5dp" android:background="#F0F0F0"/>
+
+                <!-- Zone -->
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical"
+                    android:paddingVertical="10dp" android:layout_marginBottom="2dp">
+                    <TextView android:layout_width="28dp" android:layout_height="wrap_content"
+                        android:text="📍" android:textSize="16sp"/>
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Zone" android:textSize="12sp" android:textColor="#757575"/>
+                        <TextView android:id="@+id/tvZone" android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:text="—"
+                            android:textSize="14sp" android:textStyle="bold" android:textColor="#212121"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="0.5dp" android:background="#F0F0F0"/>
+
+                <!-- Vehicle -->
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical"
+                    android:paddingVertical="10dp">
+                    <TextView android:layout_width="28dp" android:layout_height="wrap_content"
+                        android:text="🚚" android:textSize="16sp"/>
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Vehicle" android:textSize="12sp" android:textColor="#757575"/>
+                        <TextView android:id="@+id/tvVehicle" android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:text="—"
+                            android:textSize="14sp" android:textStyle="bold" android:textColor="#212121"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- bottom padding -->
+        <View android:layout_width="match_parent" android:layout_height="20dp"/>
+
+    </LinearLayout>
+</ScrollView>

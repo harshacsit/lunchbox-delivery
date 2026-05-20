@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--
+        Theme.LunchboxDelivery
+        Parent MUST be Theme.MaterialComponents — NOT Theme.AppCompat.
+        ChipGroup, MaterialButton, BottomNavigationView all require MaterialComponents.
+        Using AppCompat crashes the app on the first screen that has any of these views.
+    -->
+    <style name="Theme.LunchboxDelivery" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">#E65100</item>
+        <item name="colorPrimaryVariant">#BF360C</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorSecondary">#E65100</item>
+        <item name="colorOnSecondary">#FFFFFF</item>
+        <item name="android:statusBarColor">#BF360C</item>
+        <item name="android:windowBackground">@color/white</item>
+    </style>
+
+    <!-- Splash uses full orange background -->
+    <style name="Theme.LunchboxDelivery.Splash" parent="Theme.LunchboxDelivery">
+        <item name="android:windowBackground">@color/orange</item>
+        <item name="android:statusBarColor">@color/orange</item>
+    </style>
+
+</resources>

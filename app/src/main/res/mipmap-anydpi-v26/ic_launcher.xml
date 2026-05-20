@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  PLACE THIS FILE IN: app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+  AND ALSO:           app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
+  (same content for both files)
+
+  HOW TO CREATE THE FOLDER IN ANDROID STUDIO:
+  1. Right-click res folder → New → Android Resource Directory
+  2. Resource type: mipmap
+  3. Directory name: mipmap-anydpi-v26
+  4. Click OK
+  5. Right-click that folder → New → XML Resource File → name: ic_launcher
+  6. Paste this content
+  7. Repeat for ic_launcher_round.xml
+-->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@drawable/ic_launcher_background"/>
+    <foreground android:drawable="@drawable/ic_launcher_foreground"/>
+</adaptive-icon>

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "979213722326",
+    "project_id": "lunchboxdelivery-3d673",
+    "storage_bucket": "lunchboxdelivery-3d673.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:979213722326:android:ab144cebf5ebe7bacb1f77",
+        "android_client_info": {
+          "package_name": "com.lunchbox.delivery"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDi3tKodv6GXG4-emuPBzoG525v_gSCZC4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

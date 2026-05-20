@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Location: app/src/main/res/drawable/status_badge.xml          -->
+<!-- This gives the status label (Pending/Picked/Delayed) a rounded -->
+<!-- pill shape. The color is changed in Java based on status value. -->
+
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <!-- Default color — overridden in DeliveryAdapter.java -->
+    <solid android:color="#FF9800"/>
+
+    <corners android:radius="20dp"/>
+
+</shape>

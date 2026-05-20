@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  PLACE THIS FILE IN: app/src/main/res/drawable/ic_launcher_foreground.xml
+  This is the foreground layer of the adaptive icon (the lunchbox graphic)
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Lunchbox body -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M20,42 Q20,36 26,36 L82,36 Q88,36 88,42 L88,82 Q88,88 82,88 L26,88 Q20,88 20,82 Z"/>
+
+    <!-- Lunchbox lid -->
+    <path
+        android:fillColor="#FFCCBC"
+        android:pathData="M16,38 Q16,32 22,32 L86,32 Q92,32 92,38 L92,46 L16,46 Z"/>
+
+    <!-- Lid handle -->
+    <path
+        android:fillColor="#FFCCBC"
+        android:pathData="M40,26 Q40,22 44,22 L64,22 Q68,22 68,26 L68,32 L40,32 Z"/>
+
+    <!-- Divider line in box -->
+    <path
+        android:fillColor="#E65100"
+        android:pathData="M54,50 L54,84"
+        android:strokeColor="#E65100"
+        android:strokeWidth="2"/>
+
+    <!-- Left compartment: rice/food item -->
+    <path
+        android:fillColor="#FFF3E0"
+        android:pathData="M26,54 Q26,52 28,52 L50,52 Q52,52 52,54 L52,78 Q52,80 50,80 L28,80 Q26,80 26,78 Z"/>
+    <path
+        android:fillColor="#FFB74D"
+        android:pathData="M30,62 Q36,56 42,62 Q48,68 42,72 Q36,76 30,70 Z"/>
+
+    <!-- Right compartment: vegetables -->
+    <path
+        android:fillColor="#E8F5E9"
+        android:pathData="M56,54 Q56,52 58,52 L80,52 Q82,52 82,54 L82,78 Q82,80 80,80 L58,80 Q56,80 56,78 Z"/>
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M60,66 Q64,58 68,62 Q72,58 76,66 Q74,74 68,74 Q62,74 60,66 Z"/>
+
+</vector>
