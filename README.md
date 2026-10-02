@@ -1,232 +1,65 @@
-# 🍱 Lunchbox Delivery for college startup
+# Lunchbox Delivery A SRKREC Startup: Agent App (Android)
 
-A complete lunchbox delivery management system with an **Android agent app** and a **web admin dashboard**, backed by Firebase.
+The app our delivery agents use every day. It shows each agent their route for the day, lets them mark every stop as picked up, delayed or no-box, and keeps working when the signal drops. Admins manage everything from the web dashboard; this app is deliberately for agents only.
 
----
-
-## Overview
-
-Lunchbox Delivery has two parts that work together:
-
-- **Android App** — delivery agents log in, see their assigned deliveries, and update statuses in real time
-- **Web Dashboard** — admin imports customers, assigns routes, tracks live delivery progress, and manages the team
+Package: `com.lunchbox.delivery` · Min SDK 24 · Java · Firebase (Auth, Firestore, Cloud Messaging)
 
 ---
 
-## Tech Stack
+## What agents can do
 
-| Layer | Technology |
-|---|---|
-| Android App | Java, Firebase Auth, Firestore, FCM |
-| Admin Dashboard | HTML / CSS / Vanilla JS |
-| Database | Firebase Firestore |
-| Auth | Firebase Authentication |
-| Push Notifications | Firebase Cloud Messaging (FCM) |
-| Excel Import | SheetJS (xlsx.js) |
+- **Sign in** with the email and password the admin created for them. Admin accounts are rejected here on purpose.
+- **Set a 4-digit MPIN** so they don't type a password every morning. It is stored only as a SHA-256 hash on the device and can be reset from Settings.
+- **See today's route** on the Home tab, sorted by pickup order, with filter chips (All, Pending, Picked, Delayed, Delivered) and a search box that matches Box ID, name, address, phone and pickup point.
+- **Mark a stop** as *Picked Up*, *Delayed* or *No Box*. Every tap shows an **Undo** snackbar and only writes to Firestore after about 3.5 seconds, so a stray tap never becomes a wrong status.
+- **Reorder the route** on the Route tab by dragging stops, then save the new order.
+- **Call the customer** from the phone row on each card, or **call the admin** once a stop is marked Picked.
+- **Hand over deliveries** to another agent from the Share tab. This only changes the assignee fields and never touches status.
+- **Work offline.** Status changes made without a connection are queued on the device and pushed when the network comes back.
+- **Get push notifications** for reassignments and updates.
 
----
-
-## Project Structure
+## How a delivery moves
 
 ```
-├── Android App
-│   ├── activities/
-│   │   ├── SplashActivity.java       — launch screen, routes to login or MPIN
-│   │   ├── LoginActivity.java        — Firebase email/password login
-│   │   ├── MpinActivity.java         — 4-digit PIN screen (set or verify)
-│   │   └── MainActivity.java         — main screen with fragments + bottom nav
-│   ├── fragments/
-│   │   ├── HomeFragment.java         — delivery list with filter chips
-│   │   ├── RouteFragment.java        — drag-to-reorder route planner
-│   │   ├── ProfileFragment.java      — agent stats and profile info
-│   │   └── SettingsFragment.java     — notifications, MPIN reset, sign out
-│   ├── adapters/
-│   │   ├── DeliveryCardAdapter.java  — card UI: Picked / Delayed / Call Admin
-│   │   └── RouteAdapter.java         — drag-and-drop route list
-│   ├── models/
-│   │   ├── Delivery.java             — delivery data model
-│   │   └── User.java                 — agent/user data model
-│   ├── services/
-│   │   └── MyFirebaseMessagingService.java — push notification handler
-│   └── utils/
-│       ├── NetworkMonitor.java       — online/offline detection
-│       ├── OfflineQueueManager.java  — queues status updates when offline
-│       └── RouteResetManager.java    — archives deliveries to history
-│
-├── Web Dashboard
-│   ├── dashboard.html                — main admin panel (all features)
-│   └── login.html                   — admin login page
-│
-└── res/
-    ├── layout/                       — XML layouts for all screens
-    ├── drawable/                     — icons, shapes, status badge
-    ├── anim/                         — transition animations
-    └── values/                       — colors, strings, themes
+Pending ──► Picked
+   │
+   ├──► Delayed ──► Picked (after the agent or admin acts)
+   └──► NoBox
 ```
 
----
+*Delivered* is set by the admin ("Mark All Delivered") at the end of the run, not by agents. Marking **Delayed** also sets a permanent `wasDelayed` flag, so the dashboard can still show "was delayed" after the stop is eventually picked up.
 
-## Features
-
-### Android App (Agent Side)
-
-- **Secure login** — Firebase Auth with role check (delivery staff only)
-- **MPIN** — 4-digit PIN for quick daily access after first login
-- **Home tab** — all assigned deliveries with filter chips (All / Pending / Picked / Delayed / Delivered)
-- **Route tab** — drag-to-reorder delivery sequence, save custom pickup order
-- **Status updates** — mark Picked Up or Delayed with one tap; writes to Firestore instantly
-- **Call buttons** — call customer or call admin directly from each card
-- **Offline mode** — status updates queue locally and sync when internet returns
-- **Push notifications** — FCM alerts for new assignments and reassignments
-- **Profile tab** — total deliveries, completion rate, zone, vehicle info
-- **Settings** — notification toggles, MPIN reset, password change, sign out
-
-### Web Dashboard (Admin Side)
-
-- **Live dashboard** — real-time stats: total, pending, completed, delayed
-- **Delayed panel** — instant view of all delayed deliveries with one-click reassign
-- **Auto Assign** — reads all active customers, assigns to agents by zone + load balance, creates delivery records in bulk
-- **Deliveries panel** — full list with status filter, agent filter, search, manual add, reassign
-- **Customer master list** — permanent customer database; add, search, pause customers
-- **Excel import** — upload `.xlsx` / `.csv`, preview rows, import in bulk (up to 400 rows per batch)
-- **Agent management** — create agents (creates Firebase Auth account), view UID for Excel, track performance
-- **History** — load any past date, view summary stats and full delivery log
-- **Daily reset** — archives today's deliveries to `history/{date}/`, clears active list for tomorrow
-
----
-
-## Firestore Data Structure
+## Project layout
 
 ```
-users/
-  {uid}/             — role: "admin" or "delivery"
-    name, email, phone, zone, fcmToken, maxDeliveries, ...
-
-customers/
-  {docId}/           — permanent customer master list
-    name, phone, pickupLocation, deliveryAddress, zone, assignedAgent, active
-
-deliveries/
-  {docId}/           — today's active deliveries
-    customerName, customerPhone, pickupLocation, deliveryAddress,
-    assignedTo, assignedName, status, pickupOrder, deliveryDate, timestamp
-
-history/
-  {YYYY-MM-DD}/
-    deliveries/{docId}/   — archived delivery records
-    summary/stats         — totalDeliveries, delivered, delayed, completionRate
-
-notifications/
-  {docId}/           — FCM notification queue (sent by background process)
+app/src/main/java/com/lunchbox/delivery/
+├── activities/   Splash, Login, Mpin, Main
+├── fragments/    Home, Route, Profile, Settings, Share
+├── adapters/     DeliveryCardAdapter, RouteAdapter, ShareDeliveryAdapter
+├── models/       Delivery, User
+├── services/     MyFirebaseMessagingService
+└── utils/        NetworkMonitor, OfflineQueueManager, RouteResetManager
 ```
 
----
+`MainActivity` owns a single Firestore listener (`deliveries` where `assignedTo == current user`) and exposes the list to all fragments, so tabs never run their own duplicate queries.
 
-## Delivery Status Flow
+## Getting it running
 
-```
-Pending → Picked → (done)
-Pending → Delayed → Picked (after reassign)
-```
+1. Open the project in Android Studio (JDK 21, Gradle wrapper included).
+2. Add your `google-services.json` to `app/`. It is not committed.
+3. Provide signing details in `local.properties` (`signing.storeFile`, `signing.storePassword`, `signing.keyAlias`, `signing.keyPassword`) if you want a release build.
+4. Sync Gradle and run on a device or emulator with API 24+.
 
-Agents see **Pending** and **Delayed** deliveries with action buttons. After marking **Picked**, the card shows a **Call Admin** button. Delivered status is set by the system after archiving.
+To test properly you need an agent account: create one from the admin dashboard (Agents → Add Agent), which creates the Firebase Auth user and the `users/{uid}` document with `role: "delivery"`.
 
----
+## Things worth knowing
 
-## Setup
+- The MPIN screen is built entirely in Java. `activity_mpin.xml` still exists but is unused; the code-built version avoids a theme-related crash we hit earlier.
+- Splash makes no Firestore calls. Firestore persistence is on by default in the SDK; enabling it manually caused startup crashes.
+- Agent phone numbers come from the admin dashboard and are copied onto each delivery, which is how customers can call their agent.
+- Never commit `service_account.json` or `google-services.json`.
 
-### Firebase
+## Roadmap
 
-1. Create a Firebase project at [console.firebase.google.com](https://console.firebase.google.com)
-2. Enable **Authentication** (Email/Password)
-3. Enable **Firestore** in production mode
-4. Enable **Cloud Messaging**
-5. Download `google-services.json` and place in `app/`
-6. Set Firestore security rules (admin role required for write access to users collection)
-
-### Admin Account
-
-Create an admin user in Firebase Auth, then manually add a Firestore document:
-
-```
-users/{uid}/
-  name: "Admin"
-  role: "admin"
-  email: "admin@yourcompany.com"
-```
-
-### Android App
-
-```bash
-# Open in Android Studio
-# Sync Gradle
-# Run on device or emulator (API 24+)
-```
-
-### Web Dashboard
-
-Open `login.html` in any browser — no server needed. Firebase config is already embedded in the HTML files.
-
----
-
-## Daily Workflow
-
-1. **Morning** — Admin opens dashboard → Auto Assign → agents receive their route
-2. **During day** — Agents mark deliveries Picked / Delayed in real time; admin monitors live
-3. **If delayed** — Admin sees alert in Delayed panel → reassigns to another agent in one click
-4. **Evening** — Admin runs Daily Reset → data archived to history → ready for tomorrow
-
----
-
-## Excel Import Format
-
-| Column | Required | Notes |
-|---|---|---|
-| CustomerName | ✅ | |
-| Phone | | |
-| PickupLocation | ✅ | |
-| DeliveryAddress | ✅ | |
-| Zone | | e.g. north, south |
-| AgentUID | | Firebase UID from Agents panel |
-| Notes | | Special instructions |
-| ItemCount | | Defaults to 1 |
-
-Download the template from the Excel Import panel in the dashboard.
-
----
-
-## Offline Support
-
-The app uses two layers of offline protection:
-
-1. **Firestore SDK persistence** — automatically caches reads and queues writes
-2. **OfflineQueueManager** — secondary queue in SharedPreferences for status updates; flushes automatically when connectivity is restored
-
----
-
-## Dependencies
-
-### Android (`build.gradle`)
-
-- `firebase-auth`, `firebase-firestore`, `firebase-messaging`
-- `material` (MaterialComponents theme required)
-- `cardview`, `recyclerview`
-
-### Web Dashboard
-
-- Firebase JS SDK 9.22.0 (compat mode, loaded via CDN)
-- SheetJS 0.18.5 (Excel parsing, loaded via CDN)
-
----
-
-## Known Notes
-
-- The `DeliveryListActivity.java` is a deprecated stub kept to avoid stale reference errors — it can be deleted once all references are removed
-- `activity_mpin.xml` uses `Widget.MaterialComponents.Button.OutlinedButton` style; `MpinActivity.java` builds its UI entirely in code as a crash-safe fallback — the XML layout is not used at runtime
-- The `service_account.json` is for server-side FCM sending; do not commit this file to public repositories
-
----
-
-## License
-
-Private project — all rights reserved.
+- iPhone agents via the PWA (`agent.html`) using Add to Home Screen; web push needs iOS 16.4+.
+- Firebase Emulator Suite so local builds stop talking to production.
