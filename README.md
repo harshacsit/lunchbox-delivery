@@ -1,38 +1,68 @@
-# Lunchbox Delivery A SRKREC Startup: Agent App (Android)
+# Lunchbox Delivery A SRKREC Startup : Delivery Agent App
 
-The app our delivery agents use every day. It shows each agent their route for the day, lets them mark every stop as picked up, delayed or no-box, and keeps working when the signal drops. Admins manage everything from the web dashboard; this app is deliberately for agents only.
+An Android app for the delivery agents of a lunchbox service. It gives each agent a clear route for the day, makes marking a stop a single tap, and keeps working when the network doesn't.
 
-Package: `com.lunchbox.delivery` · Min SDK 24 · Java · Firebase (Auth, Firestore, Cloud Messaging)
+![Platform](https://img.shields.io/badge/platform-Android-3DDC84)
+![Min SDK](https://img.shields.io/badge/minSdk-24-blue)
+![Language](https://img.shields.io/badge/language-Java-orange)
+![Backend](https://img.shields.io/badge/backend-Firebase-FFCA28)
 
----
+<!-- Add screenshots here: Home, Route, Profile -->
 
-## What agents can do
+## Why this exists
 
-- **Sign in** with the email and password the admin created for them. Admin accounts are rejected here on purpose.
-- **Set a 4-digit MPIN** so they don't type a password every morning. It is stored only as a SHA-256 hash on the device and can be reset from Settings.
-- **See today's route** on the Home tab, sorted by pickup order, with filter chips (All, Pending, Picked, Delayed, Delivered) and a search box that matches Box ID, name, address, phone and pickup point.
-- **Mark a stop** as *Picked Up*, *Delayed* or *No Box*. Every tap shows an **Undo** snackbar and only writes to Firestore after about 3.5 seconds, so a stray tap never becomes a wrong status.
-- **Reorder the route** on the Route tab by dragging stops, then save the new order.
-- **Call the customer** from the phone row on each card, or **call the admin** once a stop is marked Picked.
-- **Hand over deliveries** to another agent from the Share tab. This only changes the assignee fields and never touches status.
-- **Work offline.** Status changes made without a connection are queued on the device and pushed when the network comes back.
-- **Get push notifications** for reassignments and updates.
+Our lunchbox startup collects boxes from homes across town and delivers them to the people who ordered them, every day, to hundreds of stops. Agents were working from phone calls and paper lists. This app replaces that: the admin assigns routes in the morning, agents see them instantly, and the office sees progress in real time.
 
-## How a delivery moves
+## Features
+
+**Daily route**
+- Stops sorted by pickup order, each showing Box ID, customer, phone, pickup point, delivery address, notes and item count
+- Filter chips (All, Pending, Picked, Delayed, Delivered) and live search across Box ID, name, address, phone and pickup point
+- Header counters for pending, done and late stops that double as shortcuts to the filtered list
+
+**Fast, forgiving status updates**
+- One-tap *Picked Up*, *Delayed* and *No Box* buttons
+- Every action shows an **Undo** snackbar and is only saved after about 3.5 seconds, so a mis-tap never reaches the office
+- Marking a stop delayed notifies the admin and leaves a permanent "was delayed" flag for later reporting
+
+**Route control**
+- Drag-to-reorder on the Route tab, with the order saved for the day
+- Hand a stop over to another agent from the Share tab
+
+**Built for real streets**
+- Offline queue: changes made without signal are stored on the phone and synced automatically when connectivity returns
+- Tap-to-call for customers, and a direct call to the admin once a stop is picked up
+- Push notifications for reassignments and updates
+
+**Secure, quick access**
+- Email and password sign-in for agent accounts only
+- A 4-digit MPIN for everyday opening, stored as a hash on the device and resettable in Settings
+
+## How a delivery changes state
 
 ```
 Pending ──► Picked
-   │
-   ├──► Delayed ──► Picked (after the agent or admin acts)
+   ├──► Delayed ──► Picked
    └──► NoBox
 ```
 
-*Delivered* is set by the admin ("Mark All Delivered") at the end of the run, not by agents. Marking **Delayed** also sets a permanent `wasDelayed` flag, so the dashboard can still show "was delayed" after the stop is eventually picked up.
+*Delivered* is set from the admin dashboard at the end of the run.
 
-## Project layout
+## Tech stack
+
+| Layer | Choice |
+|---|---|
+| Language | Java |
+| UI | Material Components, RecyclerView, ChipGroup, BottomNavigationView |
+| Auth | Firebase Authentication |
+| Data | Cloud Firestore with real-time listeners |
+| Push | Firebase Cloud Messaging |
+| Offline | Firestore persistence plus a SharedPreferences write queue |
+
+## Project structure
 
 ```
-app/src/main/java/com/lunchbox/delivery/
+com.lunchbox.delivery
 ├── activities/   Splash, Login, Mpin, Main
 ├── fragments/    Home, Route, Profile, Settings, Share
 ├── adapters/     DeliveryCardAdapter, RouteAdapter, ShareDeliveryAdapter
@@ -41,25 +71,23 @@ app/src/main/java/com/lunchbox/delivery/
 └── utils/        NetworkMonitor, OfflineQueueManager, RouteResetManager
 ```
 
-`MainActivity` owns a single Firestore listener (`deliveries` where `assignedTo == current user`) and exposes the list to all fragments, so tabs never run their own duplicate queries.
+`MainActivity` holds the one Firestore listener for the signed-in agent's deliveries and shares the list with every tab, so screens never run duplicate queries.
 
-## Getting it running
+## Getting started
 
-1. Open the project in Android Studio (JDK 21, Gradle wrapper included).
-2. Add your `google-services.json` to `app/`. It is not committed.
-3. Provide signing details in `local.properties` (`signing.storeFile`, `signing.storePassword`, `signing.keyAlias`, `signing.keyPassword`) if you want a release build.
-4. Sync Gradle and run on a device or emulator with API 24+.
+1. Clone the repository and open it in Android Studio (JDK 21).
+2. Add your own `google-services.json` to `app/`. Firebase config is never committed.
+3. For release builds, set your signing details in `local.properties`.
+4. Sync Gradle, then run on a device or emulator running Android 7.0 (API 24) or newer.
 
-To test properly you need an agent account: create one from the admin dashboard (Agents → Add Agent), which creates the Firebase Auth user and the `users/{uid}` document with `role: "delivery"`.
+The app needs a Firebase project with Authentication (email/password), Firestore and Cloud Messaging enabled, plus a delivery-agent account created through the admin dashboard.
 
-## Things worth knowing
+## Related projects
 
-- The MPIN screen is built entirely in Java. `activity_mpin.xml` still exists but is unused; the code-built version avoids a theme-related crash we hit earlier.
-- Splash makes no Firestore calls. Firestore persistence is on by default in the SDK; enabling it manually caused startup crashes.
-- Agent phone numbers come from the admin dashboard and are copied onto each delivery, which is how customers can call their agent.
-- Never commit `service_account.json` or `google-services.json`.
+- **Admin Dashboard**: assigns routes, monitors deliveries, manages agents and customers
+- **Customer Portal**: lets customers track today's box, message the office, and skip a day
+- See [`docs/TECHNICAL.md`](docs/TECHNICAL.md) for the full architecture
 
-## Roadmap
+## License
 
-- iPhone agents via the PWA (`agent.html`) using Add to Home Screen; web push needs iOS 16.4+.
-- Firebase Emulator Suite so local builds stop talking to production.
+Private project. All rights reserved.
