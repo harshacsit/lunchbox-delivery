@@ -1,4 +1,3 @@
-
 package com.lunchbox.delivery.fragments;
 
 import android.app.AlertDialog;
@@ -16,11 +15,18 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.lunchbox.delivery.BuildConfig;
 import com.lunchbox.delivery.R;
 import com.lunchbox.delivery.activities.LoginActivity;
 import com.lunchbox.delivery.activities.MpinActivity;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 public class SettingsFragment extends Fragment {
 
@@ -32,6 +38,14 @@ public class SettingsFragment extends Fragment {
 
         String uid = FirebaseAuth.getInstance().getCurrentUser() != null
                 ? FirebaseAuth.getInstance().getCurrentUser().getUid() : null;
+
+        // ── On Duty toggle — NEW ──
+        // Lets the agent mark themselves online/offline for the day. Writes
+        // onDuty + lastOnlineAt/lastOfflineAt onto their own users/{uid} doc
+        // (shown live on the admin dashboard's agent cards), and appends a
+        // permanent row to duty_logs (agentId, type, timestamp) so admin can
+        // reconstruct "on duty at 10am, off at 12pm" and daily attendance later.
+        setupOnDutyToggle(view, uid);
 
         // ── Notification toggles ──
         Switch switchNewDelivery  = view.findViewById(R.id.switchNewDelivery);
@@ -137,6 +151,74 @@ public class SettingsFragment extends Fragment {
         }
 
         return view;
+    }
+
+    // ── On Duty toggle setup ──
+    // The listener is attached only AFTER the saved state is loaded and
+    // applied via setChecked(), so restoring "already on duty" on fragment
+    // reopen does NOT itself fire a spurious duty_logs write / reset the
+    // "since" timestamp.
+    private void setupOnDutyToggle(View view, String uid) {
+        Switch switchOnDuty = view.findViewById(R.id.switchOnDuty);
+        TextView tvDutyStatus = view.findViewById(R.id.tvDutyStatus);
+        if (uid == null || switchOnDuty == null) return;
+
+        FirebaseFirestore.getInstance().collection("users").document(uid).get()
+                .addOnSuccessListener(doc -> {
+                    if (!isAdded() || getActivity() == null) return;
+
+                    boolean isOn = doc.exists() && Boolean.TRUE.equals(doc.getBoolean("onDuty"));
+                    switchOnDuty.setChecked(isOn);
+                    updateDutyStatusText(tvDutyStatus, doc, isOn);
+
+                    switchOnDuty.setOnCheckedChangeListener((btn, checked) -> {
+                        long now = System.currentTimeMillis();
+
+                        Map<String, Object> updates = new HashMap<>();
+                        updates.put("onDuty", checked);
+                        if (checked) updates.put("lastOnlineAt", now);
+                        else updates.put("lastOfflineAt", now);
+
+                        FirebaseFirestore.getInstance().collection("users").document(uid)
+                                .update(updates)
+                                .addOnSuccessListener(v -> {
+                                    if (tvDutyStatus != null) {
+                                        tvDutyStatus.setText((checked ? "On duty since " : "Off duty since ") + formatTime(now));
+                                    }
+                                    Toast.makeText(getContext(),
+                                            checked ? "You're on duty" : "You're off duty",
+                                            Toast.LENGTH_SHORT).show();
+                                })
+                                .addOnFailureListener(e ->
+                                        Toast.makeText(getContext(), "Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+
+                        // Permanent audit row — this (not the two fields above)
+                        // is what lets the admin dashboard reconstruct full
+                        // on/off history and daily present/absent attendance.
+                        Map<String, Object> log = new HashMap<>();
+                        log.put("agentId", uid);
+                        log.put("type", checked ? "online" : "offline");
+                        log.put("timestamp", now);
+                        FirebaseFirestore.getInstance().collection("duty_logs").add(log);
+                    });
+                })
+                .addOnFailureListener(e -> {
+                    if (tvDutyStatus != null) tvDutyStatus.setText("Could not load duty status");
+                });
+    }
+
+    private void updateDutyStatusText(TextView tv, DocumentSnapshot doc, boolean isOn) {
+        if (tv == null) return;
+        Long ts = isOn ? doc.getLong("lastOnlineAt") : doc.getLong("lastOfflineAt");
+        if (ts != null) {
+            tv.setText((isOn ? "On duty since " : "Off duty since ") + formatTime(ts));
+        } else {
+            tv.setText(isOn ? "Currently on duty" : "Currently off duty");
+        }
+    }
+
+    private String formatTime(long ts) {
+        return new SimpleDateFormat("h:mm a", Locale.getDefault()).format(new Date(ts));
     }
 
     private void showUpdateVehicleDialog(String uid) {

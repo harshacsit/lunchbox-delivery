@@ -12,6 +12,51 @@
         android:orientation="vertical"
         android:padding="12dp">
 
+        <!-- ── DUTY STATUS SECTION — NEW ── -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DUTY STATUS"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:textColor="#9E9E9E"
+            android:letterSpacing="0.12"
+            android:paddingStart="4dp"
+            android:layout_marginBottom="6dp"
+            android:layout_marginTop="4dp"/>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="#FFFFFF">
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:padding="4dp">
+
+                <LinearLayout android:id="@+id/rowOnDuty"
+                    android:layout_width="match_parent" android:layout_height="56dp"
+                    android:orientation="horizontal" android:gravity="center_vertical"
+                    android:paddingHorizontal="16dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="🟢" android:textSize="18sp" android:layout_marginEnd="14dp"/>
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="On Duty" android:textSize="14sp" android:textColor="#212121"/>
+                        <TextView android:id="@+id/tvDutyStatus" android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:text="Currently off duty"
+                            android:textSize="11sp" android:textColor="#9E9E9E"/>
+                    </LinearLayout>
+                    <Switch android:id="@+id/switchOnDuty"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
         <!-- ── NOTIFICATIONS SECTION ── -->
         <TextView
             android:layout_width="wrap_content"

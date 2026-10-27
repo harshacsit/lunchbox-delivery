@@ -7,6 +7,8 @@
     - Removed @color/chip_bg_selector from chips (causes crash if color/ folder missing)
     - Chip styling done in Java instead (safer for beginners)
     - emptyState is now LinearLayout correctly typed
+    - NEW: added a search bar (etSearch) below the filter chips so agents can find a
+      customer card instantly instead of scrolling through a mixed/long list
 -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -42,7 +44,6 @@
                 android:layout_height="40dp"
                 android:text="All"
                 android:textSize="13sp"
-                android:checked="true"
                 style="@style/Widget.MaterialComponents.Chip.Filter"/>
 
             <com.google.android.material.chip.Chip
@@ -51,6 +52,7 @@
                 android:layout_height="40dp"
                 android:text="Pending"
                 android:textSize="13sp"
+                android:checked="true"
                 style="@style/Widget.MaterialComponents.Chip.Filter"/>
 
             <com.google.android.material.chip.Chip
@@ -79,6 +81,43 @@
 
         </com.google.android.material.chip.ChipGroup>
     </HorizontalScrollView>
+
+    <!-- SEARCH BAR (NEW) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="#FFFFFF"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🔍"
+            android:textSize="15sp"
+            android:layout_marginEnd="8dp"/>
+
+        <EditText
+            android:id="@+id/etSearch"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="@drawable/input_bg"
+            android:hint="Search Box ID, name, address or phone..."
+            android:inputType="text"
+            android:maxLines="1"
+            android:imeOptions="actionSearch"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textSize="13sp"
+            android:textColor="#212121"
+            android:textColorHint="#BDBDBD"/>
+
+    </LinearLayout>
 
     <!-- COUNT LINE -->
     <TextView

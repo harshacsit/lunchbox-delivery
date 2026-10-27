@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- res/layout/item_delivery_card.xml
+     v3 — Delayed + No Box side by side, big Picked Up button below them,
+     Call Admin only after Picked. The old standalone "Call Customer" button
+     was removed — calling the customer is done from the small phone row
+     inside the details (tap the phone number / 📞 icon).
+-->
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -17,7 +23,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- TOP COLOUR STRIP -->
+        <!-- TOP COLOUR STRIP — changes colour with status -->
         <View
             android:id="@+id/vStatusStrip"
             android:layout_width="match_parent"
@@ -31,9 +37,9 @@
             android:orientation="horizontal"
             android:padding="16dp">
 
-            <!-- Order number circle -->
+            <!-- LEFT: order number -->
             <LinearLayout
-                android:layout_width="46dp"
+                android:layout_width="44dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="top|center_horizontal"
@@ -50,6 +56,7 @@
                     android:textColor="#FFFFFF"
                     android:background="@drawable/circle_orange"/>
 
+                <!-- Drag handle — shown in Route tab only -->
                 <TextView
                     android:id="@+id/dragHandle"
                     android:layout_width="wrap_content"
@@ -64,30 +71,35 @@
                     android:visibility="gone"/>
             </LinearLayout>
 
-            <!-- Customer info -->
+            <!-- RIGHT: customer info -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <!-- Name + status -->
+                <!-- Box ID + status pill -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="8dp">
+                    android:layout_marginBottom="4dp">
 
                     <TextView
-                        android:id="@+id/tvCustomerName"
-                        android:layout_width="0dp"
+                        android:id="@+id/tvBoxId"
+                        android:layout_width="200dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Customer Name"
-                        android:textSize="17sp"
-                        android:textStyle="bold"
-                        android:textColor="#1A1A2E"/>
+                        android:background="#FFF3E0"
+                        android:paddingStart="10dp"
+                        android:paddingTop="4dp"
+                        android:paddingEnd="10dp"
+                        android:paddingBottom="4dp"
+                        android:text="LB-001"
+                        android:textColor="#E65100"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tvStatus"
@@ -104,30 +116,45 @@
                         android:paddingBottom="5dp"/>
                 </LinearLayout>
 
-                <!-- Phone tap to call -->
+                <!-- Customer name -->
+                <TextView
+                    android:id="@+id/tvCustomerName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="Customer Name"
+                    android:textColor="#212121"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <!-- Phone row — SMALL call icon + number, tap to call.
+                     This is the only "call customer" control on the card now. -->
                 <LinearLayout
                     android:id="@+id/phoneRow"
                     android:layout_width="match_parent"
-                    android:layout_height="42dp"
+                    android:layout_height="36dp"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:layout_marginBottom="4dp"
                     android:clickable="true"
                     android:focusable="true"
                     android:background="?attr/selectableItemBackground">
-                    <TextView android:layout_width="24dp" android:layout_height="wrap_content"
-                        android:text="📞" android:textSize="14sp"/>
+                    <TextView
+                        android:layout_width="22dp"
+                        android:layout_height="wrap_content"
+                        android:text="📞"
+                        android:textSize="13sp"/>
                     <TextView
                         android:id="@+id/tvPhone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="9876543210"
-                        android:textSize="14sp"
+                        android:textSize="13sp"
                         android:textColor="#1565C0"
                         android:textStyle="bold"/>
                 </LinearLayout>
 
-                <!-- Pickup location -->
+                <!-- Pickup -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -141,7 +168,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Pickup"
+                        android:text="Pickup location"
                         android:textSize="13sp"
                         android:textColor="#424242"/>
                 </LinearLayout>
@@ -160,7 +187,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Address"
+                        android:text="Delivery address"
                         android:textSize="13sp"
                         android:textColor="#424242"/>
                 </LinearLayout>
@@ -180,6 +207,7 @@
                     android:paddingBottom="4dp"
                     android:layout_marginTop="4dp"
                     android:visibility="gone"/>
+
             </LinearLayout>
         </LinearLayout>
 
@@ -208,17 +236,20 @@
                 android:layout_marginStart="8dp"/>
         </LinearLayout>
 
+        <!-- DIVIDER -->
         <View android:layout_width="match_parent" android:layout_height="1dp"
             android:background="#F0F0F0"/>
 
-        <!-- ACTION BUTTONS -->
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- ACTION BUTTONS                              -->
+        <!-- ═══════════════════════════════════════════ -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="12dp">
 
-            <!-- Picked + Delayed (shown when Pending or Delayed) -->
+            <!-- ROW 1: Delayed + No Box side by side (visible when Pending/Delayed) -->
             <LinearLayout
                 android:id="@+id/rowActionMain"
                 android:layout_width="match_parent"
@@ -227,72 +258,56 @@
                 android:layout_marginBottom="8dp">
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnPicked"
-                    android:layout_width="0dp"
-                    android:layout_height="56dp"
-                    android:layout_weight="1"
-                    android:text="✓ Picked Up"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:textColor="#FFFFFF"
-                    app:backgroundTint="#2E7D32"
-                    app:cornerRadius="12dp"
-                    android:layout_marginEnd="6dp"/>
-
-                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnDelayed"
                     android:layout_width="0dp"
                     android:layout_height="56dp"
                     android:layout_weight="1"
-                    android:text="⚠ Delayed"
+                    android:text="⚠  Delayed"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     android:textColor="#FFFFFF"
                     app:backgroundTint="#C62828"
+                    app:cornerRadius="12dp"
+                    android:layout_marginEnd="6dp"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnNoBox"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_weight="1"
+                    android:text="📦  No Box"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF"
+                    app:backgroundTint="#6A1B9A"
                     app:cornerRadius="12dp"/>
             </LinearLayout>
 
-            <!-- Delivered Button (shown ONLY after Picked) -->
+            <!-- BIG Picked Up button — same weight/size the old Call Customer button had -->
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnDelivered"
+                android:id="@+id/btnPicked"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:text="✓ Mark as Delivered"
-                android:textSize="14sp"
+                android:layout_height="58dp"
+                android:text="✓  Picked Up"
+                android:textSize="15sp"
                 android:textStyle="bold"
                 android:textColor="#FFFFFF"
-                app:backgroundTint="#1565C0"
+                app:backgroundTint="#2E7D32"
                 app:cornerRadius="12dp"
-                android:layout_marginBottom="8dp"
-                android:visibility="gone"/>
+                android:layout_marginBottom="8dp"/>
 
-            <!-- Call Admin (shown ONLY after Picked) -->
+            <!-- Call Admin — shown ONLY after Picked -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCallAdmin"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:text="📞 Call Admin"
+                android:text="📞  Call Admin"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:textColor="#FFFFFF"
                 app:backgroundTint="#E65100"
                 app:cornerRadius="12dp"
-                android:layout_marginBottom="8dp"
                 android:visibility="gone"/>
-
-            <!-- Call Customer (always visible) -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnCall"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:text="📞 Call Customer"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:textColor="#1565C0"
-                app:backgroundTint="#E3F2FD"
-                app:cornerRadius="12dp"
-                app:strokeColor="#BBDEFB"
-                app:strokeWidth="1dp"/>
 
         </LinearLayout>
     </LinearLayout>

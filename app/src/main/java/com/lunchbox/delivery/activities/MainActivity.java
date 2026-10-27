@@ -21,6 +21,7 @@ import com.lunchbox.delivery.fragments.HomeFragment;
 import com.lunchbox.delivery.fragments.ProfileFragment;
 import com.lunchbox.delivery.fragments.RouteFragment;
 import com.lunchbox.delivery.fragments.SettingsFragment;
+import com.lunchbox.delivery.fragments.ShareFragment;
 import com.lunchbox.delivery.models.Delivery;
 import com.lunchbox.delivery.utils.NetworkMonitor;
 import com.lunchbox.delivery.utils.OfflineQueueManager;
@@ -108,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
                 Fragment frag;
                 if      (id == R.id.nav_home)     frag = new HomeFragment();
                 else if (id == R.id.nav_route)    frag = new RouteFragment();
+                else if (id == R.id.nav_share)    frag = new ShareFragment();
                 else if (id == R.id.nav_profile)  frag = new ProfileFragment();
                 else                              frag = new SettingsFragment();
                 loadFragment(frag, true);
@@ -259,6 +261,7 @@ public class MainActivity extends AppCompatActivity {
             Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragmentContainer);
             if (f instanceof HomeFragment)  ((HomeFragment)  f).refreshDeliveries();
             if (f instanceof RouteFragment) ((RouteFragment) f).refreshDeliveries();
+            if (f instanceof ShareFragment) ((ShareFragment) f).refreshList();
         } catch (Exception ignored) {}
     }
 

@@ -2,9 +2,12 @@ package com.lunchbox.delivery.fragments;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -35,9 +38,11 @@ public class HomeFragment extends Fragment {
     private LinearLayout emptyState;
     private TextView tvEmptyTitle, tvEmptySubtitle, tvFilterCount;
     private ChipGroup chipGroup;
+    private EditText etSearch; // NEW — quick search box
 
     private final List<Delivery> displayList = new ArrayList<>();
-    private String activeFilter = "ALL";
+    private String activeFilter = "Pending";
+    private String searchQuery = ""; // NEW — current search text, lowercase, trimmed
 
     @Nullable
     @Override
@@ -58,6 +63,7 @@ public class HomeFragment extends Fragment {
         tvEmptySubtitle = view.findViewById(R.id.tvEmptySubtitle);
         tvFilterCount   = view.findViewById(R.id.tvFilterCount);
         chipGroup       = view.findViewById(R.id.chipGroup);
+        etSearch        = view.findViewById(R.id.etSearch);
 
         if (recyclerView != null) {
             adapter = new DeliveryCardAdapter(getContext(), displayList);
@@ -87,6 +93,18 @@ public class HomeFragment extends Fragment {
             syncChip();
         }
 
+        // Search box — filters the list as the agent types (name, address, phone, pickup)
+        if (etSearch != null) {
+            etSearch.addTextChangedListener(new TextWatcher() {
+                @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    searchQuery = s.toString().trim().toLowerCase();
+                    refreshDeliveries();
+                }
+                @Override public void afterTextChanged(Editable s) {}
+            });
+        }
+
         refreshDeliveries();
         return view;
     }
@@ -101,7 +119,9 @@ public class HomeFragment extends Fragment {
         displayList.clear();
         for (Delivery d : all) {
             String s = d.getStatus() != null ? d.getStatus() : "";
-            if (activeFilter.equals("ALL") || s.equals(activeFilter)) displayList.add(d);
+            boolean matchesFilter = activeFilter.equals("ALL") || s.equals(activeFilter);
+            boolean matchesSearch = searchQuery.isEmpty() || matchesSearchQuery(d, searchQuery);
+            if (matchesFilter && matchesSearch) displayList.add(d);
         }
 
         getActivity().runOnUiThread(() -> {
@@ -117,29 +137,38 @@ public class HomeFragment extends Fragment {
                 int dl = count(all, "Delayed");
 
                 if (tvFilterCount != null) {
-                    if ("ALL".equals(activeFilter))
+                    if (!searchQuery.isEmpty()) {
+                        tvFilterCount.setText(displayList.size() + " result" + (displayList.size() == 1 ? "" : "s")
+                                + " for \"" + searchQuery + "\"");
+                    } else if ("ALL".equals(activeFilter)) {
                         tvFilterCount.setText(all.size() + " deliveries  •  " + p + " pending  •  " + dl + " delayed");
-                    else
+                    } else {
                         tvFilterCount.setText(displayList.size() + " " + activeFilter.toLowerCase() + " deliveries");
+                    }
                 }
 
                 if (tvEmptyTitle != null && tvEmptySubtitle != null) {
-                    switch (activeFilter) {
-                        case "Pending":
-                            tvEmptyTitle.setText("No pending deliveries");
-                            tvEmptySubtitle.setText("All picked up or in progress!"); break;
-                        case "Delayed":
-                            tvEmptyTitle.setText("No delays today!");
-                            tvEmptySubtitle.setText("Everything is on time 🎉"); break;
-                        case "Picked":
-                            tvEmptyTitle.setText("None picked up yet");
-                            tvEmptySubtitle.setText("Picked orders appear here"); break;
-                        case "Delivered":
-                            tvEmptyTitle.setText("No completed deliveries yet");
-                            tvEmptySubtitle.setText("Delivered orders appear here"); break;
-                        default:
-                            tvEmptyTitle.setText("No deliveries today");
-                            tvEmptySubtitle.setText("Admin assigns routes each morning");
+                    if (!searchQuery.isEmpty()) {
+                        tvEmptyTitle.setText("No matches found");
+                        tvEmptySubtitle.setText("Try a different name, address or phone number");
+                    } else {
+                        switch (activeFilter) {
+                            case "Pending":
+                                tvEmptyTitle.setText("No pending deliveries");
+                                tvEmptySubtitle.setText("All picked up or in progress!"); break;
+                            case "Delayed":
+                                tvEmptyTitle.setText("No delays today!");
+                                tvEmptySubtitle.setText("Everything is on time 🎉"); break;
+                            case "Picked":
+                                tvEmptyTitle.setText("None picked up yet");
+                                tvEmptySubtitle.setText("Picked orders appear here"); break;
+                            case "Delivered":
+                                tvEmptyTitle.setText("No completed deliveries yet");
+                                tvEmptySubtitle.setText("Delivered orders appear here"); break;
+                            default:
+                                tvEmptyTitle.setText("No deliveries today");
+                                tvEmptySubtitle.setText("Admin assigns routes each morning");
+                        }
                     }
                 }
             } catch (Exception e) {
@@ -175,5 +204,16 @@ public class HomeFragment extends Fragment {
         int n = 0;
         for (Delivery d : list) if (status.equals(d.getStatus())) n++;
         return n;
+    }
+
+    // NEW — checks a delivery against the search text across the fields an agent
+    // would actually search by: Box ID (primary), customer name, address, phone, pickup location.
+    private boolean matchesSearchQuery(Delivery d, String q) {
+        String boxId  = d.getBoxId()           != null ? d.getBoxId().toLowerCase()           : "";
+        String name   = d.getCustomerName()    != null ? d.getCustomerName().toLowerCase()    : "";
+        String addr   = d.getDeliveryAddress() != null ? d.getDeliveryAddress().toLowerCase() : "";
+        String phone  = d.getCustomerPhone()   != null ? d.getCustomerPhone().toLowerCase()   : "";
+        String pickup = d.getPickupLocation()  != null ? d.getPickupLocation().toLowerCase()  : "";
+        return boxId.contains(q) || name.contains(q) || addr.contains(q) || phone.contains(q) || pickup.contains(q);
     }
 }

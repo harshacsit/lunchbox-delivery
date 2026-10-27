@@ -11,6 +11,10 @@
         android:id="@+id/nav_route"
         android:icon="@drawable/ic_route"
         android:title="Route"/>
+    <item
+        android:id="@+id/nav_share"
+        android:icon="@drawable/ic_share"
+        android:title="Share" />
 
     <item
         android:id="@+id/nav_profile"

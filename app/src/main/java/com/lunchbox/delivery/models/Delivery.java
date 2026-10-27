@@ -1,15 +1,20 @@
 package com.lunchbox.delivery.models;
 
 /**
- * Delivery model — updated with adminPhone field
+ * Delivery model — updated with adminPhone and boxId fields
  *
- * New field: adminPhone
+ * boxId: copied from the customer's Box ID at assignment time. Agents identify
+ *   customers by Box ID (not name) once there are many stops, so this is shown
+ *   prominently on the delivery card.
+ *
+ * adminPhone
  *   Stored in each delivery document when assigned.
  *   Copied from the admin's users document at assignment time.
  *   Allows agents to call admin directly from the delivery card.
  */
 public class Delivery {
     private String deliveryId;
+    private String boxId;         // NEW — shown prominently on the card
     private String customerName;
     private String customerPhone;
     private String pickupLocation;
@@ -22,12 +27,14 @@ public class Delivery {
     private int    itemCount;
     private int    pickupOrder;
     private String deliveryDate;
-    private String adminPhone;   // NEW — admin phone for "Call Admin" button
+    private String adminPhone;   // admin phone for "Call Admin" button
+    private String agentPhone;   // agent phone (used by customer.html to call the agent)
 
     public Delivery() {}
 
     // ── Getters ──
     public String getDeliveryId()     { return deliveryId; }
+    public String getBoxId()          { return boxId; }
     public String getCustomerName()   { return customerName; }
     public String getCustomerPhone()  { return customerPhone; }
     public String getPickupLocation() { return pickupLocation; }
@@ -41,9 +48,11 @@ public class Delivery {
     public int    getPickupOrder()    { return pickupOrder; }
     public String getDeliveryDate()   { return deliveryDate; }
     public String getAdminPhone()     { return adminPhone; }
+    public String getAgentPhone()     { return agentPhone; }
 
     // ── Setters ──
     public void setDeliveryId(String v)     { deliveryId = v; }
+    public void setBoxId(String v)          { boxId = v; }
     public void setCustomerName(String v)   { customerName = v; }
     public void setCustomerPhone(String v)  { customerPhone = v; }
     public void setPickupLocation(String v) { pickupLocation = v; }
@@ -57,4 +66,5 @@ public class Delivery {
     public void setPickupOrder(int v)       { pickupOrder = v; }
     public void setDeliveryDate(String v)   { deliveryDate = v; }
     public void setAdminPhone(String v)     { adminPhone = v; }
+    public void setAgentPhone(String v)     { agentPhone = v; }
 }

@@ -28,8 +28,10 @@ android {
                 properties.load(FileInputStream(localPropertiesFile))
             }
 
-            storeFile = properties.getProperty("signing.storeFile")?.let { file(it) }
-                ?: file("C:/Users/harsh/OneDrive/Desktop/lunchbox.jks")
+            // Prefer properties from local.properties, fallback to hardcoded only if necessary
+            val sFile = properties.getProperty("signing.storeFile")
+            storeFile = if (sFile != null) file(sFile) else file("C:/Users/harsh/OneDrive/Desktop/lunchbox.jks")
+            
             storePassword = properties.getProperty("signing.storePassword") ?: "lunchbox"
             keyAlias = properties.getProperty("signing.keyAlias") ?: "lunchbox"
             keyPassword = properties.getProperty("signing.keyPassword") ?: "lunchbox"
